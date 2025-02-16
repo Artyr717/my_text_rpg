@@ -2,7 +2,9 @@ import random
 
 import questionary
 
+from Enemy.enemy import Enemy
 from Player.character import Character
+from fight import Fight
 
 
 class Event:
@@ -16,7 +18,7 @@ class Event:
         self.level_multiplier = level_multiplier
         self.level_additive = level_additive
 
-    def get_chance(self, player_level):
+    def get_chance(self, player_level: int):
         chance = self.base_chance
         if self.level_multiplier:
             chance *= (1 + self.level_multiplier * player_level)
@@ -27,7 +29,11 @@ class Event:
     def trigger(self, player: Character):
 
         if self.category == "Бой":
-            pass
+            print(self.description)
+            if self.name == "Нападение бандитов":
+                enemy = Enemy("Бандиты", 34, 1, "Клинок", 8, 3, 5, 2)
+                fight = Fight(player, enemy)
+                fight.battle()
 
         elif self.category == "Находка":
             question = questionary.select(
@@ -44,7 +50,7 @@ class Event:
                 else:
                     print("Вы прошли мимо...")
 
-            print(player)
+
 
 
         elif self.category == "Мини-квест":
@@ -58,16 +64,19 @@ events = [
     Event("Дикие звери атакуют", "Вы подверглись нападению диких зверей.", 0.15, "Бой", level_additive=0.005),
     # Шанс немного увеличивается с уровнем
     Event("Засада гоблинов", "Гоблины устроили засаду на дороге.", 0.1, "Бой"),
+
     # События находок
     Event("Найти потерянный кошелек", "Вы нашли кошелек, полный монет!", 0.25, "Находка"),
     Event("Обнаружить тайник", "Вы обнаружили тайник с полезными припасами.", 0.1, "Находка", level_multiplier=0.02),
     # Шанс увеличивается с уровнем
     Event("Найти редкий цветок", "Вы нашли редкий цветок, который можно продать.", 0.05,
           "Находка"),
+
     # Мини-квесты
     Event("Помощь фермеру", "Фермер просит вас помочь ему защитить его скот от волков.", 0.15, "Мини-квест"),
     Event("Найти пропавшего ребенка", "Жители деревни просят вас найти пропавшего ребенка.", 0.08, "Мини-квест"),
     Event("Доставить письмо", "Вас просят доставить важное письмо в соседний город.", 0.12, "Мини-квест"),
+
     # Мирные события
     Event("Встретить торговца", "Вы встретили торговца, который предлагает редкие товары.", 0.2, "Мирное"),
     Event("Отдых у костра", "Вы отдохнули у костра и восстановили силы.", 0.15, "Мирное"),

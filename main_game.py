@@ -5,6 +5,7 @@ import random
 
 from Player.inventory import Inventory
 from Player.items import Weapon, Potion, SellableItem
+from player_data_func.save import get_dict_player
 
 
 class Game:
@@ -17,7 +18,7 @@ class Game:
     def load_save_data(self):  # TODO: Сделать загрузку сохранения
         pass
 
-    def save_data(self):  # TODO: Сделать сохранение данных
+    def save_data(self, player: Character):  # TODO: Сделать сохранение данных
         pass
 
     def create_player(self):
@@ -28,6 +29,7 @@ class Game:
     def run(self):
         self.create_player()
         player = self.character
+
         prev_event = None
         sword = Weapon("Стальной меч", price=24, damage=20)
         small_potion = Potion("Маленькое зелье здоровья", price=10,
@@ -36,6 +38,7 @@ class Game:
         player.inventory.add_item(sword)
         player.inventory.add_item(small_potion, 2)
         player.inventory.add_item(gold_coin, 50)
+        self.save_data(player)
         while True:
             chosen_event = events.choose_event(player.level, previous_event=prev_event)
             base_question = questionary.select(
